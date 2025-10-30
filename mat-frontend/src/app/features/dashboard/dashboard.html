@@ -6,7 +6,16 @@
     <p>Your Email: {{ user.email }}</p>
     <p>Your Country: {{ user.country }}</p>
     <p>Your Product: {{ user.product }}</p>
-    <p>Your 1st Playlist: {{ user.playlists[0].name }}</p>
+</div>
+<div>
+    <h3>Your Playlists:</h3>
+    <ul>
+        <li *ngFor="let playlist of user.playlists">
+            <button>
+                {{ playlist.name }} ({{ playlist.tracks.total }} tracks)
+            </button>
+        </li>
+    </ul>
 </div>
 @if (!user) {
     <p>Loading user data...</p>

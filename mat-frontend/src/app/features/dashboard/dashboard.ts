@@ -20,4 +20,8 @@ export class Dashboard implements OnInit {
   ngOnInit() {
     console.log('Dashboard initialized for user:', this.user);
   }
+
+  goToBlindtestMenu() {
+    this.router.navigate(['/blindtest-menu']);
+  }
 }

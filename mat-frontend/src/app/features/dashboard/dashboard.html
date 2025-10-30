@@ -8,14 +8,7 @@
     <p>Your Product: {{ user.product }}</p>
 </div>
 <div>
-    <h3>Your Playlists:</h3>
-    <ul>
-        <li *ngFor="let playlist of user.playlists">
-            <button>
-                {{ playlist.name }} ({{ playlist.tracks.total }} tracks)
-            </button>
-        </li>
-    </ul>
+    <button (click)="goToBlindtestMenu()">Go to Blindtest Menu</button>
 </div>
 @if (!user) {
     <p>Loading user data...</p>

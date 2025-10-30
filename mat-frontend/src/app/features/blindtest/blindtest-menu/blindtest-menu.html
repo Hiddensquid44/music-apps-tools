@@ -1,0 +1,24 @@
+<div>
+    <h2>Welcome, {{ user.display_name }}</h2>
+</div>
+<div>
+    <p>Your Spotify ID: {{ user.id }}</p>
+    <p>Your Email: {{ user.email }}</p>
+    <p>Your Country: {{ user.country }}</p>
+    <p>Your Product: {{ user.product }}</p>
+</div>
+<div>
+    <h3>Your Playlists:</h3>
+    <ul>
+        @for (playlist of user.playlists; track $index) {
+            <li>
+                <button (click)="startBlindtest($index)">
+                    {{ playlist.name }} ({{ playlist.tracks.total }} tracks)
+                </button>
+            </li>
+        }
+    </ul>
+</div>
+@if (!user) {
+    <p>Loading user data...</p>
+}

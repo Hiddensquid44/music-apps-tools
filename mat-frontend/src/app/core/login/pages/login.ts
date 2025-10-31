@@ -19,46 +19,25 @@ export class Login {
   private readonly loginService = inject(LoginService);
 
   async ngOnInit() {
-    // Only access `window` or perform browser-only logic when running in the browser.
-    console.log('Login component initialized.');
-    console.log('Platform ID:', this.platformId);
-    console.log('isPlatformBrowser:', isPlatformBrowser(this.platformId));
     if (!isPlatformBrowser(this.platformId)) {
-      console.log('Not in browser platform, skipping login logic.');
       return;
     }
 
-    console.log('In browser platform, proceeding with login logic.');
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-    console.log('Retrieved code from URL params:', code);
     if (code) {
-      console.log('Authorization code found, proceeding to get token.');
-      console.log('Authorization code:', code);
       await this.getToken(code);
-      console.log('Token retrieved successfully.');
-      console.log('Access Token:', LoginData.accessToken);
       GlobalData.currentUser = new User();
-      console.log('Initialized GlobalData.currentUser.');
-      console.log('Current User before fetching info:', GlobalData.currentUser);
-      console.log('Fetching current user info.');
       await this.getCurrentUserInfos();
-      console.log('User info retrieved successfully.');
-      console.log('Current User:', GlobalData.currentUser);
       await this.getCurrentUserPlaylists();
-      console.log('User playlists retrieved successfully.');
-      console.log('User playlists:', GlobalData.currentUser.playlists);
-      console.log('Navigating to dashboard.');
       this.router.navigate(['/dashboard']);
     }
   }
 
   private async getCurrentUserInfos() {
-    console.log('Fetching current user info.');
     return new Promise<void>((resolve, reject) => {
       this.loginService.getCurrentUserInfos().subscribe({
         next: (user: User) => {
-          console.log('Retrieved user info:', user);
           GlobalData.currentUser = user;
           resolve();
         },
@@ -72,7 +51,6 @@ export class Login {
   }
 
   private async getCurrentUserPlaylists() {
-    console.log('Fetching current user playlists.');
     let offset = 0;
     let playlists: any[] = [];
     
@@ -84,8 +62,6 @@ export class Login {
             error: (error) => reject(error)
           });
         }) as Playlist[];
-
-        console.log('Retrieved playlists:', newPlaylists);
         if (!newPlaylists) {
           break;
         }

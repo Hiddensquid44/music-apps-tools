@@ -17,9 +17,7 @@ export class Dashboard implements OnInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    console.log('Dashboard initialized for user:', this.user);
-  }
+  ngOnInit() {}
 
   goToBlindtestMenu() {
     this.router.navigate(['/blindtest-menu']);

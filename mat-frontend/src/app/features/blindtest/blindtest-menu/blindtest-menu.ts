@@ -16,9 +16,7 @@ export class BlindtestMenu {
 
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    console.log('Blindtest Menu initialized for user:', this.user);
-  }
+  ngOnInit() {}
 
   startBlindtest(id: number) {
     BlindtestData.currentPlaylist = this.user.playlists[id];

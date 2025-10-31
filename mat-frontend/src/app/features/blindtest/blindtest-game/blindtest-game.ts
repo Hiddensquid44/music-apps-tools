@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Playlist } from '../../../shared/models/playlist';
 import { BlindtestData } from '../blindtest-data';
+import { SharedService } from '../../../shared/shared-service';
 
 @Component({
   selector: 'app-blindtest-game',
@@ -12,8 +13,14 @@ export class BlindtestGame {
 
   public playlist = BlindtestData.currentPlaylist ?? new Playlist();
 
-  constructor() {
-    console.log('Blindtest Game initialized');
+  constructor(private sharedService: SharedService) {}
+
+  playPlaylist(): void {
+    this.sharedService.playPlaylist(this.playlist.uri, true);
+  }
+
+  shufflePlaylist(state: boolean = true): void {
+    this.sharedService.toggleShuffle(state);
   }
 
 }

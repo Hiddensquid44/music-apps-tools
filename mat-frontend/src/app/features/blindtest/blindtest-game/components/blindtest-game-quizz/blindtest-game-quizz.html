@@ -1,0 +1,7 @@
+@for (proposal of proposals; track $index) {
+    <div>
+        <button (click)="selectProposal($index)">
+            {{ proposal }}
+        </button>
+    </div>
+}

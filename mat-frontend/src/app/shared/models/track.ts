@@ -45,12 +45,12 @@ export class Track {
     isLocal: boolean = false;
 
     constructor(
-        available_markets: string[],
-        disc_number: number,
-        duration_ms: number,
+        available_markets?: string[] | null,
+        disc_number?: number | null,
+        duration_ms?: number | null,
     ) {
-        this.available_markets = available_markets;
-        this.disc_number = disc_number;
-        this.duration_ms = duration_ms;
+        this.available_markets = available_markets ?? [];
+        this.disc_number = disc_number ?? 0;
+        this.duration_ms = duration_ms ?? 0;
     }
 }

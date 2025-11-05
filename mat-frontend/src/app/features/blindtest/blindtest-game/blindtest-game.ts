@@ -44,7 +44,6 @@ export class BlindtestGame {
           // Ensure we're running in the next tick
           setTimeout(() => {
             this.nextQuizz(true);
-            this.cdr.detectChanges();
           }, 0);
         },
         error: (error) => {
@@ -59,15 +58,14 @@ export class BlindtestGame {
 
   async nextQuizz(firstTrack: boolean): Promise<void> {
     this.gameOnGoing = false;
-    this.notPlayedTracks = this.notPlayedTracks.filter((_, index) => index != this.currentTrackIndex - 1);
     this.currentTrackIndex++;
+    this.notPlayedTracks = this.notPlayedTracks.filter((track) => track.name !== this.blindtestTracks[this.currentTrackIndex].name);
     if (this.currentTrackIndex < this.blindtestTracks.length) {
       if (!firstTrack) {
         await this.sharedService.playNextTrack();
       }
-      console.log('Starting quizz for track:', this.blindtestTracks[this.currentTrackIndex].name);
-      console.log('Current track index:', this.currentTrackIndex);
       this.gameOnGoing = true;
+      console.log('Current track index:', this.currentTrackIndex);
       console.log('gameOnGoing set to:', this.gameOnGoing);
       
       // Shuffle the track names and take the first 3 as wrong proposals
@@ -76,7 +74,6 @@ export class BlindtestGame {
       this.cdr.detectChanges();
     } else {
       // Implement end of game logic here
-      this.gameOnGoing = false;
       console.log('Blindtest game ended.');
     }
   }

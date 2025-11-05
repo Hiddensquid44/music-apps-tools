@@ -43,7 +43,7 @@ export class BlindtestGameQuizz implements OnInit {
         this.goodAnswerSelected.emit(true);
       });
     } else {
-      console.log('Wrong answer. The correct answer was:', this.goodTrack.name);
+      console.log('Wrong answer.');
     }
   }
 }

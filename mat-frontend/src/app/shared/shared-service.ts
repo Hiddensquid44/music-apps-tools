@@ -3,6 +3,7 @@ import { LoginData } from '../core/login/login-data';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Track } from './models/track';
+import { rejects } from 'node:assert';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +101,30 @@ export class SharedService {
           },
           error: (error) => {
             console.error('Error toggling shuffle:', error);
+            reject(error);
+          }
+        });
+    });
+  }
+
+  public getPlaylistDetails(href: string): Observable<Track[]> {
+    return this.http.get<any>(href, this.getOptions()).pipe(
+      map(response => response.tracks.items.map((item: any) => item.track as Track))
+    );
+  }
+
+  public async addTrackToQueue(trackUri: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.http.post(`https://api.spotify.com/v1/me/player/queue?uri=${trackUri}`,
+        null,
+        this.getOptions('text'))
+        .subscribe({
+          next: () => {
+            console.log('Track added to queue:', trackUri);
+            resolve();
+          },
+          error: (error) => {
+            console.error('Error adding track to queue:', error);
             reject(error);
           }
         });

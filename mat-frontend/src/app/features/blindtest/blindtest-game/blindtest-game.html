@@ -7,7 +7,7 @@
 
 @if (gameOnGoing) {
     <app-blindtest-game-quizz
-        [goodTrack]="blindtestTracks[currentTrackIndex]"
+        [goodTrack]="playlistTracks[currentTrackIndex]"
         [wrongTracksName]="wrongTracksNames"
         (goodAnswerSelected)="nextQuizz(false)"
     ></app-blindtest-game-quizz>

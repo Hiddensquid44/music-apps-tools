@@ -13,13 +13,15 @@ import { BlindtestData } from '../blindtest-data';
 export class BlindtestMenu {
   
   public user = GlobalData.currentUser ?? new User();
+  public blindtestPlaylists = this.user.playlists
+    .filter(playlist => playlist.tracks.total > BlindtestData.MAX_TRACKS + 3);
 
   constructor(private router: Router) {}
 
   ngOnInit() {}
 
   startBlindtest(id: number) {
-    BlindtestData.currentPlaylist = this.user.playlists[id];
+    BlindtestData.currentPlaylist = this.blindtestPlaylists[id];
     this.router.navigate(['/blindtest-game']);
   }
 

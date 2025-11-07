@@ -6,6 +6,7 @@ import { SharedService } from '../../../shared/shared-service';
 import { BlindtestGameQuizz } from "./components/blindtest-game-quizz/blindtest-game-quizz";
 import { Track } from '../../../shared/models/track';
 import { Utils } from '../../../shared/utils';
+import { GlobalData } from '../../../shared/global-data';
 
 @Component({
   selector: 'app-blindtest-game',
@@ -18,7 +19,6 @@ import { Utils } from '../../../shared/utils';
 export class BlindtestGame {
 
   public playlist = BlindtestData.currentPlaylist ?? new Playlist();
-  public static readonly MAX_TRACKS = 10;
 
   public notPlayedTracks: Track[] = [];
   public playlistTracks: Track[] = [];
@@ -37,9 +37,10 @@ export class BlindtestGame {
     try {
       await this.sharedService.getPlaylistDetails(this.playlist.href).subscribe({
         next: async (tracks) => {
-          this.playlistTracks = Utils.shuffleArray(tracks);
+          this.playlistTracks = Utils.shuffleArray(tracks)
+            .filter((track) => track.available_markets.includes(GlobalData?.currentUser?.country));
           try {
-            for (let i = 0; i < BlindtestGame.MAX_TRACKS; i++) {
+            for (let i = 0; i < BlindtestData.MAX_TRACKS; i++) {
               console.log('Adding to queue track:', this.playlistTracks[i].name);
               await this.sharedService.addTrackToQueue(this.playlistTracks[i].uri);
             }
@@ -65,7 +66,7 @@ export class BlindtestGame {
     this.currentTrackIndex++;
     this.notPlayedTracks = this.playlistTracks.slice(this.currentTrackIndex + 1, this.playlistTracks.length);
     console.log('Not played tracks:', this.notPlayedTracks.map(track => track.name));
-    if (this.currentTrackIndex < BlindtestGame.MAX_TRACKS) {
+    if (this.currentTrackIndex < BlindtestData.MAX_TRACKS) {
       console.log('Current track index:', this.currentTrackIndex);
       console.log('gameOnGoing set to:', this.gameOnGoing);
       

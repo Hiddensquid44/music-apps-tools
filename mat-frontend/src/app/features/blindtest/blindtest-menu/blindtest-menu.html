@@ -10,7 +10,7 @@
 <div>
     <h3>Your Playlists:</h3>
     <ul>
-        @for (playlist of user.playlists; track $index) {
+        @for (playlist of blindtestPlaylists; track $index) {
             <li>
                 <button (click)="startBlindtest($index)">
                     {{ playlist.name }} ({{ playlist.tracks.total }} tracks)

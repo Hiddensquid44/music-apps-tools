@@ -36,61 +36,44 @@ export class BlindtestGame {
     this.currentTrackIndex = -1;
     try {
       await this.sharedService.getPlaylistDetails(this.playlist.href).subscribe({
-        next: (tracks) => {
+        next: async (tracks) => {
           this.playlistTracks = Utils.shuffleArray(tracks);
+          try {
+            for (let i = 0; i < BlindtestGame.MAX_TRACKS; i++) {
+              console.log('Adding to queue track:', this.playlistTracks[i].name);
+              await this.sharedService.addTrackToQueue(this.playlistTracks[i].uri);
+            }
+            setTimeout(() => {
+              this.nextQuizz();
+            }, 0);
+          } catch (error) {
+            console.error('Error adding tracks to queue:', error);
+          }
         },
         error: (error) => {
           console.error('Error retrieving playlist tracks:', error);
         }
       });
-      for (let i = 0; i < BlindtestGame.MAX_TRACKS; i++) {
-        console.log('Adding to queue track:', this.playlistTracks[i].name);
-        await this.sharedService.addTrackToQueue(this.playlistTracks[i].uri).catch((error) => {
-          console.error('Error adding track to queue:', error);
-        });
-      }
-      setTimeout(() => {
-        this.nextQuizz(true);
-      }, 0);
-      /*await this.sharedService.playPlaylist(this.playlist.uri, true);
-      this.sharedService.getUserQueue().subscribe({
-        next: (queue) => {
-          console.log('Blindtest queue:', queue);
-          //this.playlistTracks = queue;
-          console.log('Blindtest tracks:', this.playlistTracks.slice(0, BlindtestGame.MAX_TRACKS));
-          console.log('Playlist tracks :', this.playlistTracks.map(track => track.name));
-          
-          // Ensure we're running in the next tick
-          setTimeout(() => {
-            this.nextQuizz(true);
-          }, 0);
-        },
-        error: (error) => {
-          console.error('Error retrieving blindtest queue:', error);
-        }
-      });*/
     } catch (error) {
       console.error('Error starting blindtest:', error);
       throw error;
     }
   }
 
-  async nextQuizz(firstTrack: boolean): Promise<void> {
+  async nextQuizz(): Promise<void> {
     this.gameOnGoing = false;
     this.currentTrackIndex++;
     this.notPlayedTracks = this.playlistTracks.slice(this.currentTrackIndex + 1, this.playlistTracks.length);
     console.log('Not played tracks:', this.notPlayedTracks.map(track => track.name));
     if (this.currentTrackIndex < BlindtestGame.MAX_TRACKS) {
-      if (!firstTrack) {
-        await this.sharedService.playNextTrack();
-      }
-      this.gameOnGoing = true;
       console.log('Current track index:', this.currentTrackIndex);
       console.log('gameOnGoing set to:', this.gameOnGoing);
       
       // Shuffle the track names and take the first 3 as wrong proposals
       const shuffledNotPlayedNames = Utils.shuffleArray(this.notPlayedTracks.map(track => track.name));
       this.wrongTracksNames = shuffledNotPlayedNames.slice(0, Math.min(3, shuffledNotPlayedNames.length));
+      await this.sharedService.playNextTrack();
+      this.gameOnGoing = true;
       this.cdr.detectChanges();
     } else {
       // Implement end of game logic here

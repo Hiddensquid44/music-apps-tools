@@ -36,7 +36,7 @@ export class SharedService {
     });
   }
 
-  public playNextTrack(): Promise<void> {
+  public async playNextTrack(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http.post(`https://api.spotify.com/v1/me/player/next?market=from_token`,
         null,

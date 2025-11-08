@@ -74,8 +74,11 @@ export class Login {
         
         offset += 50;
       }
-
-      GlobalData.currentUser.playlists = playlists;
+      const user = GlobalData.currentUser;
+      if (user) {
+        user.playlists = playlists;
+        GlobalData.currentUser = user;
+      }
     } catch (error) {
       console.error('Error retrieving user playlists:', error);
       throw error;

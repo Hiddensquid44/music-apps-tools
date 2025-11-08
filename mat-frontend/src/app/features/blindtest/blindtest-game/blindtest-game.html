@@ -1,11 +1,11 @@
 <div>
     <h2>Blindtest's playlist: {{ playlist.name }}</h2>
 </div>
-@if (!gameOnGoing) {
+@if (!gameStarted) {
     <button (click)="setupBlindtest()">Start blindtest</button>
 }
 
-@if (gameOnGoing) {
+@if (gameStarted && gameOnGoing) {
     <app-blindtest-game-quizz
         [goodTrack]="playlistTracks[currentTrackIndex]"
         [wrongTracksName]="wrongTracksNames"

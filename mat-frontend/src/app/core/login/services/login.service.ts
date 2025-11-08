@@ -24,6 +24,7 @@ export class LoginService {
     getCurrentUserInfos(): Observable<User> {
         return this.http.get<User>(`https://api.spotify.com/v1/me`, this.getOptions());
     }
+
     getCurrentUserPlaylists(offset: number): Observable<Playlist[]> {
         const playlistsResponse$ = this.http.get<{ items: Playlist[] }>(`https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`, this.getOptions());
         return playlistsResponse$.pipe(map(response => response.items));

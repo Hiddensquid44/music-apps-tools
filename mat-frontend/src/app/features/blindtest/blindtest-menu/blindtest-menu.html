@@ -2,12 +2,6 @@
     <h2>Welcome, {{ user.display_name }}</h2>
 </div>
 <div>
-    <p>Your Spotify ID: {{ user.id }}</p>
-    <p>Your Email: {{ user.email }}</p>
-    <p>Your Country: {{ user.country }}</p>
-    <p>Your Product: {{ user.product }}</p>
-</div>
-<div>
     <h3>Your Playlists:</h3>
     <ul>
         @for (playlist of blindtestPlaylists; track $index) {

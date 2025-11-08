@@ -10,6 +10,42 @@ export class LoginData {
         'user-read-currently-playing ' +
         'user-read-playback-state';
 
-    public static accessToken: string = '';
-    public static refreshToken: string = '';
+    public static _accessToken: string = '';
+    public static _refreshToken: string = '';
+
+    public static get accessToken(): string {
+        return this._accessToken;
+    }
+
+    public static get refreshToken(): string {
+        return this._refreshToken;
+    }
+
+    public static set accessToken(value: string) {
+        this._accessToken = value;
+    }
+
+    public static set refreshToken(value: string) {
+        this._refreshToken = value;
+    }
+
+    public static saveLoginData() {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('login_accessToken', this.accessToken);
+            localStorage.setItem('login_refreshToken', this.refreshToken);
+        }
+    }
+
+    public static loadLoginData() {
+        if (typeof window !== 'undefined') {
+            const accessToken = localStorage.getItem('login_accessToken');
+            if (accessToken && accessToken !== 'undefined') {
+                this.accessToken = accessToken;
+            }
+            const refreshToken = localStorage.getItem('login_refreshToken');
+            if (refreshToken && refreshToken !== 'undefined') {
+                this.refreshToken = refreshToken;
+            }
+        }
+    }
 }

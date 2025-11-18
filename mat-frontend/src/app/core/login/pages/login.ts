@@ -5,7 +5,7 @@ import { GlobalData } from '../../../shared/global-data';
 import { User } from '../../../shared/models/user';
 import { LoginService } from '../services/login.service';
 import { LoginData } from '../login-data';
-import { Playlist } from '../../../shared/models/playlist';
+import { SharedService } from '../../../shared/shared-service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +17,7 @@ export class Login {
   constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   private readonly loginService = inject(LoginService);
+  private readonly sharedService = inject(SharedService);
 
   async ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) {
@@ -29,25 +30,32 @@ export class Login {
       await this.getToken(code);
       GlobalData.currentUser = new User();
       await this.getCurrentUserInfos();
+      await this.getCurrentPlaybackState();
       await this.getCurrentUserPlaylists();
       this.router.navigate(['/dashboard']);
     }
   }
 
   private async getCurrentUserInfos() {
-    return new Promise<void>((resolve, reject) => {
-      this.loginService.getCurrentUserInfos().subscribe({
-        next: (user: User) => {
-          GlobalData.currentUser = user;
-          resolve();
-        },
-        error: (error) => {
-          console.error('Error retrieving user info:', error);
-          this.refreshToken();
-          reject(error);
-        }
-      });
-    });
+    try {
+      const user = await this.loginService.getCurrentUserInfos();
+      GlobalData.currentUser = user;
+    } catch (error) {
+      console.error('Error retrieving user info:', error);
+      this.refreshToken();
+      throw error;
+    }
+  }
+
+  private async getCurrentPlaybackState() {
+    try {
+      const playbackState = await this.sharedService.getCurrentPlaybackState();
+      GlobalData.playbackState = playbackState;
+      console.log('Retrieved playback state:', playbackState);
+    } catch (error) {
+      console.error('Error retrieving playback state:', error);
+      throw error;
+    }
   }
 
   private async getCurrentUserPlaylists() {
@@ -56,12 +64,7 @@ export class Login {
     
     try {
       while (true) {
-        const newPlaylists = await new Promise((resolve, reject) => {
-          this.loginService.getCurrentUserPlaylists(offset).subscribe({
-            next: (result) => resolve(result),
-            error: (error) => reject(error)
-          });
-        }) as Playlist[];
+        const newPlaylists = await this.sharedService.getCurrentUserPlaylists(offset);
         if (!newPlaylists) {
           break;
         }

@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { User } from '../../../shared/models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginData } from '../login-data';
-import { Playlist } from '../../../shared/models/playlist';
 
 @Injectable({
     providedIn: 'root'
@@ -21,12 +18,8 @@ export class LoginService {
         };
     }
 
-    getCurrentUserInfos(): Observable<User> {
-        return this.http.get<User>(`https://api.spotify.com/v1/me`, this.getOptions());
-    }
-
-    getCurrentUserPlaylists(offset: number): Observable<Playlist[]> {
-        const playlistsResponse$ = this.http.get<{ items: Playlist[] }>(`https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`, this.getOptions());
-        return playlistsResponse$.pipe(map(response => response.items));
+    async getCurrentUserInfos(): Promise<User> {
+        const user = await this.http.get<User>(`https://api.spotify.com/v1/me`, this.getOptions()).toPromise();
+        return user!;
     }
 }

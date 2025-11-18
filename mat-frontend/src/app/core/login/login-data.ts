@@ -29,6 +29,13 @@ export class LoginData {
         this._refreshToken = value;
     }
 
+    public static clearLoginData() {
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('login_accessToken');
+            localStorage.removeItem('login_refreshToken');
+        }
+    }
+
     public static saveLoginData() {
         if (typeof window !== 'undefined') {
             localStorage.setItem('login_accessToken', this.accessToken);

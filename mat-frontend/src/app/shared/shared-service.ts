@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { LoginData } from '../core/login/login-data';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
 import { Track } from './models/track';
-import { rejects } from 'node:assert';
+import { PlaybackState } from './models/playback-state';
+import { Playlist } from './models/playlist';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,11 @@ export class SharedService {
         }),
         responseType: responseType as any
     };
+  }
+
+  async getCurrentUserPlaylists(offset: number): Promise<Playlist[]> {
+      const playlistsResponse = await this.http.get<{ items: Playlist[] }>(`https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`, this.getOptions()).toPromise();
+      return playlistsResponse!.items;
   }
 
   public playTracks(trackUris: string | string[], shuffle?: boolean): Promise<void> {
@@ -81,14 +86,6 @@ export class SharedService {
     }
   }
 
-  public getUserQueue(): Observable<Track[]> {
-    const queue$ = this.http.get<{ currently_playing: Track, queue: Track[] }>(`https://api.spotify.com/v1/me/player/queue`, 
-      this.getOptions()).pipe(
-        map(response => [response.currently_playing, ...response.queue])
-      );
-    return queue$;
-  }
-
   public toggleShuffle(state: boolean): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http.put(`https://api.spotify.com/v1/me/player/shuffle?state=${state}&market=from_token`, 
@@ -107,10 +104,9 @@ export class SharedService {
     });
   }
 
-  public getPlaylistDetails(href: string): Observable<Track[]> {
-    return this.http.get<any>(href, this.getOptions()).pipe(
-      map(response => response.tracks.items.map((item: any) => item.track as Track))
-    );
+  public async getPlaylistDetails(href: string): Promise<Track[]> {
+    const response = await this.http.get<any>(href, this.getOptions()).toPromise();
+    return response!.tracks.items.map((item: any) => item.track as Track);
   }
 
   public async addTrackToQueue(trackUri: string): Promise<void> {
@@ -129,5 +125,93 @@ export class SharedService {
           }
         });
     });
+  }
+
+  public async startPlayback(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.http.put(`https://api.spotify.com/v1/me/player/play?market=from_token`,
+        null,
+        this.getOptions('text'))
+        .subscribe({
+          next: () => {
+            console.log('Playback started.');
+            resolve();
+          },
+          error: (error) => {
+            console.error('Error starting playback:', error);
+            reject(error);
+          }
+        });
+    });
+  }
+
+  public async pausePlayback(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.http.put(`https://api.spotify.com/v1/me/player/pause?market=from_token`,
+        null,
+        this.getOptions('text'))
+        .subscribe({
+          next: () => {
+            console.log('Playback paused.');
+            resolve();
+          },
+          error: (error) => {
+            console.error('Error pausing playback:', error);
+            reject(error);
+          }
+        });
+    });
+  }
+
+  public async getCurrentPlaybackState(): Promise<PlaybackState> {
+    return new Promise<PlaybackState>((resolve, reject) => {
+      this.http.get<PlaybackState>(`https://api.spotify.com/v1/me/player`, this.getOptions())
+        .subscribe({
+          next: (response) => {
+            resolve(response);
+          },
+          error: (error) => {
+            console.error('Error retrieving current playback state:', error);
+            reject(error);
+          }
+        });
+    });
+  }
+
+  public async getCurrentPlayingTrack(): Promise<Track | null> {
+    return new Promise<Track | null>((resolve) => {
+      this.http.get<any>(`https://api.spotify.com/v1/me/player/currently-playing`, this.getOptions())
+        .subscribe({
+          next: (response) => {
+            resolve(response?.item || null);
+          },
+          error: (error) => {
+            console.error('Error retrieving current playing track:', error);
+            resolve(null);
+          }
+        });
+    });
+  }
+
+  public async skipToTrack(trackHref: string): Promise<void> {
+    try {
+      let queueEmpty = false;
+      while (!queueEmpty) {
+        await new Promise(res => setTimeout(res, 500));
+        const track = await this.getCurrentPlayingTrack();
+        console.log('Currently playing track:', track?.href);
+        console.log('Target track to skip to:', trackHref);
+        if (track?.href === trackHref) {
+          queueEmpty = true;
+        } else {
+          // Skip the currently playing track
+          await this.playNextTrack();
+        }
+      }
+      console.log('User queue cleared.');
+    } catch (error) {
+      console.error('Error clearing user queue:', error);
+      throw error;
+    }
   }
 }

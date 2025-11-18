@@ -6,7 +6,6 @@
     <p>Your Email: {{ user.email }}</p>
     <p>Your Country: {{ user.country }}</p>
     <p>Your Product: {{ user.product }}</p>
-    
 </div>
 <div>
     <button (click)="goToBlindtestMenu()">Go to Blindtest Menu</button>
@@ -14,3 +13,6 @@
 @if (!user) {
     <p>Loading user data...</p>
 }
+<div>
+    <button (click)="logout()">Log out</button>
+</div>

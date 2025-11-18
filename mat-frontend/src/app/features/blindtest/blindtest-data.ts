@@ -1,47 +1,43 @@
-import { Playlist } from "../../shared/models/playlist";
-import { Track } from "../../shared/models/track";
+import { inject, Injectable, OnInit, PLATFORM_ID } from "@angular/core";
+import { GameState } from "./models/game-state";
+import { isPlatformBrowser } from "@angular/common";
 
-export class BlindtestData {
+@Injectable({ providedIn: 'root' })
+export class BlindtestData implements OnInit {
 
-  public static readonly MAX_TRACKS = 10;
+  public static readonly BLINDTEST_SIZE = 10;
 
-  private static _currentPlaylist: Playlist;
-  private static _currentTrack: Track;
+  private static readonly STORAGE_KEY = 'blindtest_gameState';
+  
+  private static _gameState: GameState;
 
-  public static get currentPlaylist(): Playlist {
-    return this._currentPlaylist;
+  public static get gameState(): GameState {
+    return this._gameState;
   }
 
-  public static get currentTrack(): Track {
-    return this._currentTrack;
-  }
-
-  public static set currentPlaylist(playlist: Playlist) {
-    this._currentPlaylist = playlist;
+  public static set gameState(gameState: GameState) {
+    this._gameState = gameState;
     this.saveBlindtestData();
   }
 
-  public static set currentTrack(track: Track) {
-    this._currentTrack = track;
-    this.saveBlindtestData();
+  public ngOnInit() {
+    BlindtestData.loadBlindtestData();
   }
 
   public static saveBlindtestData() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('blindtest_currentPlaylist', JSON.stringify(this.currentPlaylist));
-      localStorage.setItem('blindtest_currentTrack', JSON.stringify(this.currentTrack));
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this._gameState));
     }
   }
 
   public static loadBlindtestData() {
-    if (typeof window !== 'undefined') {
-      const playlist = localStorage.getItem('blindtest_currentPlaylist');
-      if (playlist && playlist !== 'undefined') {
-        this.currentPlaylist = JSON.parse(playlist);
-      }
-      const track = localStorage.getItem('blindtest_currentTrack');
-      if (track && track !== 'undefined') {
-        this.currentTrack = JSON.parse(track);
+    const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+    if (typeof window !== 'undefined' && isBrowser) {
+      const gameState = localStorage.getItem(this.STORAGE_KEY);
+      if (gameState && gameState !== 'undefined') {
+        this._gameState = JSON.parse(gameState);
+      } else {
+        this._gameState = new GameState();
       }
     }
   }

@@ -3,6 +3,7 @@ import { GlobalData } from '../../../shared/global-data';
 import { User } from '../../../shared/models/user';
 import { Router } from '@angular/router';
 import { BlindtestData } from '../blindtest-data';
+import { GameState } from '../models/game-state';
 
 @Component({
   selector: 'app-blindtest-menu',
@@ -14,14 +15,16 @@ export class BlindtestMenu {
   
   public user = GlobalData.currentUser ?? new User();
   public blindtestPlaylists = this.user.playlists
-    .filter(playlist => playlist.tracks.total > BlindtestData.MAX_TRACKS + 3);
+    .filter(playlist => playlist.tracks.total > BlindtestData.BLINDTEST_SIZE + 3);
 
   constructor(private router: Router) {}
 
   ngOnInit() {}
 
   startBlindtest(id: number) {
-    BlindtestData.currentPlaylist = this.blindtestPlaylists[id];
+    const gameState = new GameState();
+    gameState.playlist = this.blindtestPlaylists[id];
+    BlindtestData.gameState = gameState;
     this.router.navigate(['/blindtest-game']);
   }
 

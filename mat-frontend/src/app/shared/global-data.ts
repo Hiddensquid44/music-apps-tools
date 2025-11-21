@@ -42,10 +42,14 @@ export class GlobalData {
       const currentUser = localStorage.getItem('currentUser');
       if (currentUser && currentUser !== 'undefined') {
         this._currentUser = JSON.parse(currentUser);
+      } else {
+        this._currentUser = new User();
       }
       const playbackState = localStorage.getItem('playbackState');
       if (playbackState && playbackState !== 'undefined') {
         this._playbackState = JSON.parse(playbackState);
+      } else {
+        this._playbackState = new PlaybackState();
       }
     }
   }

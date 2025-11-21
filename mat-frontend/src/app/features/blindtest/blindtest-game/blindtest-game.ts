@@ -9,29 +9,32 @@ import { GameState } from '../models/game-state';
 import { TrackService } from '../../../shared/services/spotify-api/track-service';
 import { PlaylistService } from '../../../shared/services/spotify-api/playlist-service';
 import { BlindtestService } from '../blindtest-service';
+import { PlaybackStateService } from '../../../shared/services/spotify-api/playback-state-service';
 
 @Component({
   selector: 'app-blindtest-game',
   standalone: true,
   imports: [CommonModule, BlindtestGameQuizz],
-  providers: [TrackService, PlaylistService, BlindtestService],
+  providers: [TrackService, PlaylistService, BlindtestService, PlaybackStateService],
   templateUrl: './blindtest-game.html',
   styleUrl: './blindtest-game.css'
 })
 export class BlindtestGame {
 
+  public readonly BLINDTEST_SIZE = BlindtestData.BLINDTEST_SIZE;
   public gameState = BlindtestData.gameState ?? new GameState();
   public notPlayedTracks: Track[] = [];
+  public gameEnded: boolean = false;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private trackService: TrackService,
     private playlistService: PlaylistService,
-    private blindtestService: BlindtestService
+    private blindtestService: BlindtestService,
+    private playbackStateService: PlaybackStateService
   ) {}
 
   async setupBlindtest(): Promise<void> {
-    this.gameState.gameStarted = true;
     this.gameState.currentTrackIndex = -1;
     try {
       const tracks = await this.playlistService.getPlaylistDetails(this.gameState.playlist.href);
@@ -43,6 +46,10 @@ export class BlindtestGame {
           await this.trackService.addTrackToQueue(this.gameState.playlistTracks[i].uri);
         }
         await this.blindtestService.skipToTrack(this.gameState.playlistTracks[0].href);
+        await this.playbackStateService.setRepeatMode('track');
+        this.gameState.gameStarted = true;
+        this.gameState.gameOnGoing = true;
+        this.gameEnded = false;
         this.saveGameState();
         setTimeout(() => {
           this.nextQuizz();
@@ -64,6 +71,13 @@ export class BlindtestGame {
     if (this.gameState.currentTrackIndex >= BlindtestData.BLINDTEST_SIZE) {
       // Implement end of game logic here
       console.log('Blindtest game ended.');
+      this.gameState.gameStarted = false;
+      this.gameEnded = true;
+      this.saveGameState();
+      setTimeout(() => {
+        this.gameEnded = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } else {
       console.log('Current track index:', this.gameState.currentTrackIndex);
       console.log('gameOnGoing set to:', this.gameState.gameOnGoing);
@@ -73,6 +87,7 @@ export class BlindtestGame {
       this.gameState.wrongTracksNames = shuffledNotPlayedNames.slice(0, Math.min(3, shuffledNotPlayedNames.length));
       if (this.gameState.currentTrackIndex > 0) {
         await this.trackService.playNextTrack();
+        await this.playbackStateService.setRepeatMode('track');
       }
       this.gameState.gameOnGoing = true;
       this.saveGameState();

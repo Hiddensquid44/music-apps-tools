@@ -23,10 +23,12 @@ export class LoginData {
 
     public static set accessToken(value: string) {
         this._accessToken = value;
+        this.saveLoginData();
     }
 
     public static set refreshToken(value: string) {
         this._refreshToken = value;
+        this.saveLoginData();
     }
 
     public static clearLoginData() {

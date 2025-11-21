@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LoginData } from '../../../core/login/login-data';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Track } from '../../models/track';
 import { PlaybackStateService } from './playback-state-service';
 
 @Injectable({
@@ -18,21 +17,6 @@ export class TrackService {
         }),
         responseType: responseType as any
     };
-  }
-
-  public async playTracks(trackUris: string | string[], shuffle?: boolean): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (shuffle !== undefined) {
-          this.playbackStateService.toggleShuffle(shuffle);
-      }
-      this.http.put(`https://api.spotify.com/v1/me/player/play?market=from_token`, 
-        { uris: Array.isArray(trackUris) ? trackUris : [trackUris] }, 
-        this.getOptions('text'))
-        .subscribe({
-            next: () => console.log('Track is now playing.'),
-            error: (error) => console.error('Error playing track:', error)
-        });
-    });
   }
 
   public async playNextTrack(): Promise<void> {
@@ -52,22 +36,6 @@ export class TrackService {
         });
     });
   }
-
-  public async getCurrentPlayingTrack(): Promise<Track | null> {
-    return new Promise<Track | null>((resolve) => {
-      this.http.get<any>(`https://api.spotify.com/v1/me/player/currently-playing`, this.getOptions())
-        .subscribe({
-          next: (response) => {
-            resolve(response?.item || null);
-          },
-          error: (error) => {
-            console.error('Error retrieving current playing track:', error);
-            resolve(null);
-          }
-        });
-    });
-  }
-
   public async addTrackToQueue(trackUri: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http.post(`https://api.spotify.com/v1/me/player/queue?uri=${trackUri}`,

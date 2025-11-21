@@ -1,14 +1,25 @@
 <div>
     <h2>Blindtest's playlist: {{ gameState.playlist.name }}</h2>
 </div>
+@if (gameState.gameStarted) {
+    <div>
+        <p>Song n°{{ gameState.currentTrackIndex + 1 }}/{{ BLINDTEST_SIZE }}</p>
+    </div>
+}
 @if (!gameState.gameStarted) {
     <button (click)="setupBlindtest()">Start blindtest</button>
 }
 
-@if (gameState.gameStarted && gameState.gameOnGoing) {
+@if (gameState.gameOnGoing) {
     <app-blindtest-game-quizz
         [goodTrack]="gameState.playlistTracks[gameState.currentTrackIndex]"
         [wrongTracksName]="gameState.wrongTracksNames"
         (goodAnswerSelected)="nextQuizz()"
     ></app-blindtest-game-quizz>
+}
+
+@if (gameEnded) {
+    <div>
+        <p>Game ended. Thank you for playing!</p>
+    </div>
 }

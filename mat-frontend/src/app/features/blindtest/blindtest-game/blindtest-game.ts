@@ -1,18 +1,20 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BlindtestData } from '../blindtest-data';
-import { SharedService } from '../../../shared/shared-service';
 import { BlindtestGameQuizz } from "./components/blindtest-game-quizz/blindtest-game-quizz";
 import { Track } from '../../../shared/models/track';
 import { Utils } from '../../../shared/utils';
 import { GlobalData } from '../../../shared/global-data';
 import { GameState } from '../models/game-state';
+import { TrackService } from '../../../shared/services/spotify-api/track-service';
+import { PlaylistService } from '../../../shared/services/spotify-api/playlist-service';
+import { BlindtestService } from '../blindtest-service';
 
 @Component({
   selector: 'app-blindtest-game',
   standalone: true,
   imports: [CommonModule, BlindtestGameQuizz],
-  providers: [SharedService],
+  providers: [TrackService, PlaylistService, BlindtestService],
   templateUrl: './blindtest-game.html',
   styleUrl: './blindtest-game.css'
 })
@@ -22,23 +24,25 @@ export class BlindtestGame {
   public notPlayedTracks: Track[] = [];
 
   constructor(
-    private sharedService: SharedService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private trackService: TrackService,
+    private playlistService: PlaylistService,
+    private blindtestService: BlindtestService
   ) {}
 
   async setupBlindtest(): Promise<void> {
     this.gameState.gameStarted = true;
     this.gameState.currentTrackIndex = -1;
     try {
-      const tracks = await this.sharedService.getPlaylistDetails(this.gameState.playlist.href);
+      const tracks = await this.playlistService.getPlaylistDetails(this.gameState.playlist.href);
       this.gameState.playlistTracks = Utils.shuffleArray(tracks)
         .filter((track) => track.available_markets.includes(GlobalData?.currentUser?.country));
       try {
         for (let i = 0; i < BlindtestData.BLINDTEST_SIZE; i++) {
           console.log('Adding to queue track:', this.gameState.playlistTracks[i].name);
-          await this.sharedService.addTrackToQueue(this.gameState.playlistTracks[i].uri);
+          await this.trackService.addTrackToQueue(this.gameState.playlistTracks[i].uri);
         }
-        await this.sharedService.skipToTrack(this.gameState.playlistTracks[0].href);
+        await this.blindtestService.skipToTrack(this.gameState.playlistTracks[0].href);
         this.saveGameState();
         setTimeout(() => {
           this.nextQuizz();
@@ -68,7 +72,7 @@ export class BlindtestGame {
       const shuffledNotPlayedNames = Utils.shuffleArray(this.notPlayedTracks.map(track => track.name));
       this.gameState.wrongTracksNames = shuffledNotPlayedNames.slice(0, Math.min(3, shuffledNotPlayedNames.length));
       if (this.gameState.currentTrackIndex > 0) {
-        await this.sharedService.playNextTrack();
+        await this.trackService.playNextTrack();
       }
       this.gameState.gameOnGoing = true;
       this.saveGameState();

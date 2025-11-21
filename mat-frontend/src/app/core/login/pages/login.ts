@@ -1,23 +1,28 @@
-import { Component, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { GlobalData } from '../../../shared/global-data';
 import { User } from '../../../shared/models/user';
 import { LoginService } from '../services/login.service';
 import { LoginData } from '../login-data';
-import { SharedService } from '../../../shared/services/shared-service';
+import { PlaybackStateService } from '../../../shared/services/spotify-api/playback-state-service';
+import { PlaylistService } from '../../../shared/services/spotify-api/playlist-service';
 
 @Component({
   selector: 'app-login',
   imports: [CommonModule],
+  providers: [LoginService, PlaybackStateService, PlaylistService],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
 export class Login {
-  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
-
-  private readonly loginService = inject(LoginService);
-  private readonly sharedService = inject(SharedService);
+  constructor(
+    private router: Router, 
+    private loginService: LoginService, 
+    private playbackStateService: PlaybackStateService,
+    private playlistService: PlaylistService,
+    @Inject(PLATFORM_ID) 
+    private platformId: Object) {}
 
   async ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) {
@@ -49,7 +54,7 @@ export class Login {
 
   private async getCurrentPlaybackState() {
     try {
-      const playbackState = await this.sharedService.getCurrentPlaybackState();
+      const playbackState = await this.playbackStateService.getCurrentPlaybackState();
       GlobalData.playbackState = playbackState;
       console.log('Retrieved playback state:', playbackState);
     } catch (error) {
@@ -64,7 +69,7 @@ export class Login {
     
     try {
       while (true) {
-        const newPlaylists = await this.sharedService.getCurrentUserPlaylists(offset);
+        const newPlaylists = await this.playlistService.getCurrentUserPlaylists(offset);
         if (!newPlaylists) {
           break;
         }

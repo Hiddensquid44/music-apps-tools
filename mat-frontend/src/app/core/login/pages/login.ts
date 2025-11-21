@@ -5,7 +5,7 @@ import { GlobalData } from '../../../shared/global-data';
 import { User } from '../../../shared/models/user';
 import { LoginService } from '../services/login.service';
 import { LoginData } from '../login-data';
-import { SharedService } from '../../../shared/shared-service';
+import { SharedService } from '../../../shared/services/shared-service';
 
 @Component({
   selector: 'app-login',

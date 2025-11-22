@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { LoginData } from '../login-data';
 import { isPlatformBrowser } from '@angular/common';
 import { Utils } from '../../../shared/utils';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

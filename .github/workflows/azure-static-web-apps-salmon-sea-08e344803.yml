@@ -39,8 +39,6 @@ jobs:
           mkdir build_output 
           cp -r dist/mat-frontend/browser/* build_output/
           rm -rf ./dist
-          echo "Content of build_output:"
-          ls -la build_output
 
       - name: Build And Deploy
         id: builddeploy

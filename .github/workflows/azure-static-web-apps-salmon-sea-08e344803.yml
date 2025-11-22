@@ -50,7 +50,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           skip_app_build: true
-          app_location: "./mat-frontend"
+          app_location: "./mat-frontend/build_output"
           output_location: "build_output"
           api_location: ""
 

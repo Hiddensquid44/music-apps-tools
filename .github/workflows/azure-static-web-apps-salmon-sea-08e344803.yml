@@ -28,7 +28,7 @@ jobs:
           action: "upload"
           app_location: "./mat-frontend"
           api_location: ""
-          output_location: "dist/proxy-website-frontend"
+          output_location: "dist/mat-frontend"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

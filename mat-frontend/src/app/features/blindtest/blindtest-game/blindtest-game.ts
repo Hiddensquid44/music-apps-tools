@@ -74,6 +74,7 @@ export class BlindtestGame {
       this.gameState.gameStarted = false;
       this.gameEnded = true;
       this.saveGameState();
+      await this.playbackStateService.setRepeatMode('context');
       setTimeout(() => {
         this.gameEnded = false;
         this.cdr.detectChanges();

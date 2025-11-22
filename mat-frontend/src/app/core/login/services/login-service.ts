@@ -2,6 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { LoginData } from '../login-data';
 import { isPlatformBrowser } from '@angular/common';
 import { Utils } from '../../../shared/utils';
+import { environment } from '../../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class LoginService {
             response_type: 'code',
             client_id: LoginData.clientId,
             scope: LoginData.scope,
-            redirect_uri: LoginData.redirectUriLogin,
+            redirect_uri: environment.redirectUri,
             state: state
         });
         if (this.isBrowser()) {
@@ -33,7 +34,7 @@ export class LoginService {
         const params = new URLSearchParams({
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: LoginData.redirectUriLogin
+            redirect_uri: environment.redirectUri
         });
 
         const response = await fetch('https://accounts.spotify.com/api/token', {

@@ -5,6 +5,7 @@ import { GlobalData } from '../../../shared/global-data';
 import { User } from '../../../shared/models/user';
 import { LoginService } from '../services/login-service';
 import { UserService } from '../../../shared/services/spotify-api/user-service';
+import { LoginData } from '../login-data';
 
 @Component({
   selector: 'app-login',
@@ -24,13 +25,17 @@ export class Login {
       return;
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (code) {
-      await this.loginService.getToken(code);
-      GlobalData.currentUser = new User();
-      await this.getCurrentUserInfos();
-      await this.userService.saveAllCurrentUserPlaylists();
+    if (LoginData.accessToken === '') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        await this.loginService.getToken(code);
+        GlobalData.currentUser = new User();
+        await this.getCurrentUserInfos();
+        await this.userService.saveAllCurrentUserPlaylists();
+        this.router.navigate(['/dashboard']);
+      }
+    } else {
       this.router.navigate(['/dashboard']);
     }
   }

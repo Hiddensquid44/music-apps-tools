@@ -31,6 +31,10 @@ export class LoginService {
     }
 
     public async getToken(code: string) {
+        if (LoginData.accessToken) {
+            console.error('Access token already set.');
+            return;
+        }
         const params = new URLSearchParams({
             grant_type: 'authorization_code',
             code: code,
@@ -47,6 +51,9 @@ export class LoginService {
             body: params.toString()
         });
         const data = await response.json();
+        if (!data.access_token) {
+            throw new Error(data.error + data.error_description)
+        }
         LoginData.accessToken = data.access_token;
         LoginData.refreshToken = data.refresh_token;
     }

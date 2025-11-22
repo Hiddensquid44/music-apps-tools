@@ -33,10 +33,11 @@ jobs:
         working-directory: ./mat-frontend
         run: npm run build -- --output-mode=static
 
-      - name: Prepare static build for SWA
+      - name: Prepare SWA deploy folder
         working-directory: ./mat-frontend
         run: |
-          cp -r dist/mat-frontend/browser/* .
+          mkdir -p deploy
+          rsync -av --exclude='*.map' dist/mat-frontend/browser/ deploy/
 
       - name: Build And Deploy
         id: builddeploy

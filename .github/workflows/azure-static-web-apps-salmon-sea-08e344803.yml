@@ -29,26 +29,27 @@ jobs:
         working-directory: ./mat-frontend
         run: npm ci
 
-      - name: Build production (CSR)
+      - name: Build production (static)
         working-directory: ./mat-frontend
         run: npm run build -- --output-mode=static
+
+      - name: Prepare static build for SWA
+        working-directory: ./mat-frontend
+        run: |
+          mkdir -p build
+          cp -r dist/mat-frontend/browser/* build/
 
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
-        env:
-          Oryx_BuildNodeVersion: "20.19.0"
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_SEA_08E344803 }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           skip_app_build: true
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "./mat-frontend" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "mat-frontend/dist/mat-frontend" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
+          app_location: "./mat-frontend"
+          output_location: "build"
+          api_location: ""
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

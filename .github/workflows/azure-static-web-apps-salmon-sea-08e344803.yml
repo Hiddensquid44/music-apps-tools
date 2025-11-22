@@ -36,7 +36,6 @@ jobs:
       - name: Prepare static build for SWA
         working-directory: ./mat-frontend
         run: |
-          rm -rf ./dist
           cp -r dist/mat-frontend/browser/* .
 
       - name: Build And Deploy

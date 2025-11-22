@@ -36,6 +36,8 @@ jobs:
       - name: Prepare static build for SWA
         working-directory: ./mat-frontend
         run: |
+          echo "Contents of the build output directory (dist/mat-frontend/browser):"
+          ls -la dist/mat-frontend/browser
           cp -r dist/mat-frontend/browser/* .
           rm -rf ./dist
           echo "Static build prepared."

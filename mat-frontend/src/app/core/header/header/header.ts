@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoginData } from '../../login/login-data';
 import { GlobalData } from '../../../shared/global-data';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -15,11 +15,11 @@ export class Header {
 
   public logout() {
     LoginData.clearLoginData();
-    GlobalData.clearGlobalData();                                                                                                                                                                                                                                                                               
-    const spotifyLogoutWindow = window.open('https://accounts.spotify.com/en/logout', 'Spotify Logout', 'width=700,height=500,top=40,left=40');   
-    if (spotifyLogoutWindow) {
-      setTimeout(() => spotifyLogoutWindow.close(), 2000);
-    }
-    this.router.navigate(['/login']);
+    GlobalData.clearGlobalData();
+    window.open('https://accounts.spotify.com/en/logout', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
+  }
+
+  public goToPage(pageLink: string) {
+    this.router.navigate(['/' + pageLink]);
   }
 }

@@ -38,6 +38,9 @@ jobs:
         run: |
           cp -r dist/mat-frontend/browser/* .
           rm -rf ./dist
+          echo "Static build prepared."
+          echo "Contents of the output directory:"
+          ls -la
 
       - name: Build And Deploy
         id: builddeploy

@@ -36,13 +36,9 @@ jobs:
       - name: Prepare static build for SWA
         working-directory: ./mat-frontend
         run: |
-          echo "Contents of the build output directory (dist/mat-frontend/browser):"
-          ls -la dist/mat-frontend/browser
-          cp -r dist/mat-frontend/browser/* .
+          mkdir build_output 
+          cp -r dist/mat-frontend/browser/* build_output/
           rm -rf ./dist
-          echo "Static build prepared."
-          echo "Contents of the output directory:"
-          ls -la
 
       - name: Build And Deploy
         id: builddeploy
@@ -53,7 +49,7 @@ jobs:
           action: "upload"
           skip_app_build: true
           app_location: "./mat-frontend"
-          output_location: "."
+          output_location: "build_output"
           api_location: ""
 
   close_pull_request_job:

@@ -1,7 +1,12 @@
-@for (proposal of proposals; track $index) {
-    <div>
-        <button (click)="selectProposal($index)">
-            {{ proposal }}
-        </button>
+<p-card>
+    <div class="buttons-container">
+        @for (proposal of proposals; track $index) {
+            <p-button
+                class="proposals"
+                fluid="true"
+                [label]="proposal"
+                (click)="selectProposal($index)"
+            />
+        }
     </div>
-}
+</p-card>

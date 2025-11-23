@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Track } from '../../../../../shared/models/track';
 import { interval } from 'rxjs';
 import { Utils } from '../../../../../shared/utils';
+import { Card } from "primeng/card";
+import { Button } from "primeng/button";
 
 @Component({
   selector: 'app-blindtest-game-quizz',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Card, Button],
   templateUrl: './blindtest-game-quizz.html',
   styleUrl: './blindtest-game-quizz.css'
 })

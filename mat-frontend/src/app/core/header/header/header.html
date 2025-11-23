@@ -1,4 +1,7 @@
 <p-menubar [model]="items">
+    <ng-template #start>
+        <p-button label="Ultimate Blindtest" (onClick)="goToPage('dashboard')"/>
+    </ng-template>
     <ng-template #item let-item let-root="root">
         <p-button [label]=item.label [icon]=item.icon></p-button>
     </ng-template>

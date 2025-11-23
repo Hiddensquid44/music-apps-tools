@@ -4,10 +4,11 @@ import { User } from '../../../shared/models/user';
 import { Router } from '@angular/router';
 import { BlindtestData } from '../blindtest-data';
 import { GameState } from '../models/game-state';
+import { Card } from "primeng/card";
 
 @Component({
   selector: 'app-blindtest-menu',
-  imports: [],
+  imports: [Card],
   templateUrl: './blindtest-menu.html',
   styleUrl: './blindtest-menu.css'
 })

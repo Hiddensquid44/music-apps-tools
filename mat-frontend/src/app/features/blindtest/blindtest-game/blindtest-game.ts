@@ -10,11 +10,13 @@ import { TrackService } from '../../../shared/services/spotify-api/track-service
 import { PlaylistService } from '../../../shared/services/spotify-api/playlist-service';
 import { BlindtestService } from '../blindtest-service';
 import { PlaybackStateService } from '../../../shared/services/spotify-api/playback-state-service';
+import { Card } from "primeng/card";
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-blindtest-game',
   standalone: true,
-  imports: [CommonModule, BlindtestGameQuizz],
+  imports: [CommonModule, BlindtestGameQuizz, Card, ButtonModule],
   providers: [TrackService, PlaylistService, BlindtestService, PlaybackStateService],
   templateUrl: './blindtest-game.html',
   styleUrl: './blindtest-game.css'

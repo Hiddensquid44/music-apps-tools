@@ -1,0 +1,14 @@
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.proposals {
+    width: 100%;
+    height: 50px;
+}
+
+::ng-deep .proposals button {
+    height: 100%;
+}

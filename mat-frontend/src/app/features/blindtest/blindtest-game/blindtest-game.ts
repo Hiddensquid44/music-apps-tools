@@ -60,7 +60,7 @@ export class BlindtestGame {
     }
   }
 
-  async nextQuizz(): Promise<void> {
+  public async nextQuizz(): Promise<void> {
     this.gameState.gameOnGoing = false;
     this.gameState.currentTrackIndex++;
     this.notPlayedTracks = this.gameState.playlistTracks.slice(this.gameState.currentTrackIndex + 1, this.gameState.playlistTracks.length);
@@ -88,10 +88,9 @@ export class BlindtestGame {
     this.cdr.detectChanges();
   }
 
-  public roundFinished(trackScore: number) {
+  public updatePlayerScore(trackScore: number) {
     BlindtestData.gameState.score += trackScore;
     console.log("Player score: " + BlindtestData.gameState.score);
-    this.nextQuizz();
   }
 
   private saveGameState(): void {

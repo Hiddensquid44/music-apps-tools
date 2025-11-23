@@ -17,8 +17,11 @@ export class BlindtestGameQuizz implements OnInit {
   @Input() wrongTracksName: string[] = [];
 
   @Output() goodAnswerSelected: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() trackScore: EventEmitter<number> = new EventEmitter<number>();
 
   proposals: string[] = [];
+  score = 100;
+  intervalId: NodeJS.Timeout | undefined;
 
   constructor() {
     console.log('BlindtestGameQuizz constructor called');
@@ -31,17 +34,28 @@ export class BlindtestGameQuizz implements OnInit {
     this.proposals.push(...this.wrongTracksName);
     this.proposals.push(this.goodTrack.name);
     this.proposals = Utils.shuffleArray(this.proposals);
+    this.countScoreDown();
   }
 
+  async countScoreDown() {
+    this.intervalId ??= setInterval(() => {
+      this.score--;
+      if (this.score === 0) {
+        clearInterval(this.intervalId);
+        return;
+      }
+    }, 100);
+  }
+  
   selectProposal(index: number): void {
     const selectedProposal = this.proposals[index];
     console.log('Selected proposal:', selectedProposal);
     if (selectedProposal === this.goodTrack.name) {
       console.log('Correct answer!');
-      console.log('Proceeding to next track...');
-      interval(500).subscribe(() => {
-        this.goodAnswerSelected.emit(true);
-      });
+      console.log(this.score);
+      clearInterval(this.intervalId);
+      this.goodAnswerSelected.emit(true);
+      this.trackScore.emit(this.score);
     } else {
       console.log('Wrong answer.');
     }

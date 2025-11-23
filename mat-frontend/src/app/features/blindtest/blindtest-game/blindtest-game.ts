@@ -35,7 +35,6 @@ export class BlindtestGame {
   ) {}
 
   async setupBlindtest(): Promise<void> {
-    this.gameState.currentTrackIndex = -1;
     try {
       const tracks = await this.playlistService.getPlaylistDetails(this.gameState.playlist.href);
       this.gameState.playlistTracks = Utils.shuffleArray(tracks)
@@ -46,14 +45,11 @@ export class BlindtestGame {
           await this.trackService.addTrackToQueue(this.gameState.playlistTracks[i].uri);
         }
         await this.blindtestService.skipToTrack(this.gameState.playlistTracks[0].href);
-        await this.playbackStateService.setRepeatMode('track');
         this.gameState.gameStarted = true;
         this.gameState.gameOnGoing = true;
         this.gameEnded = false;
         this.saveGameState();
-        setTimeout(() => {
-          this.nextQuizz();
-        }, 0);
+        this.nextQuizz();
       } catch (error) {
         console.error('Error adding tracks to queue:', error);
       }
@@ -71,7 +67,6 @@ export class BlindtestGame {
     if (this.gameState.currentTrackIndex >= BlindtestData.BLINDTEST_SIZE) {
       // Implement end of game logic here
       console.log('Blindtest game ended.');
-      this.gameState.gameStarted = false;
       this.gameEnded = true;
       this.saveGameState();
       await this.playbackStateService.setRepeatMode('context');
@@ -88,12 +83,17 @@ export class BlindtestGame {
       this.gameState.wrongTracksNames = shuffledNotPlayedNames.slice(0, Math.min(3, shuffledNotPlayedNames.length));
       if (this.gameState.currentTrackIndex > 0) {
         await this.trackService.playNextTrack();
-        await this.playbackStateService.setRepeatMode('track');
       }
+      await this.playbackStateService.setRepeatMode('track');
       this.gameState.gameOnGoing = true;
       this.saveGameState();
       this.cdr.detectChanges();
     }
+  }
+
+  public updatePlayerScore(trackScore: number) {
+    BlindtestData.gameState.score += trackScore;
+    console.log("Player score: " + BlindtestData.gameState.score);
   }
 
   private saveGameState(): void {

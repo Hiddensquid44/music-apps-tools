@@ -8,6 +8,7 @@ export class GameState {
   wrongTracksNames: string[];
   gameStarted: boolean;
   gameOnGoing: boolean;
+  score: number;
 
   constructor() {
     this.playlist = new Playlist();
@@ -16,5 +17,6 @@ export class GameState {
     this.wrongTracksNames = [];
     this.gameStarted = false;
     this.gameOnGoing = false;
+    this.score = 0;
   }
 }

@@ -4,21 +4,21 @@
 @if (gameState.gameStarted) {
     <div>
         <p>Song n°{{ gameState.currentTrackIndex + 1 }}/{{ BLINDTEST_SIZE }}</p>
+        <p>Current score: {{ gameState.score }}</p>
     </div>
 }
 @if (!gameState.gameStarted) {
     <p>Please empty your player's queue before starting the blindtest.</p>
     <button (click)="setupBlindtest()">Start blindtest</button>
 }
-
 @if (gameState.gameOnGoing) {
     <app-blindtest-game-quizz
         [goodTrack]="gameState.playlistTracks[gameState.currentTrackIndex]"
         [wrongTracksName]="gameState.wrongTracksNames"
         (goodAnswerSelected)="nextQuizz()"
+        (trackScore)="updatePlayerScore($event)"
     ></app-blindtest-game-quizz>
 }
-
 @if (gameEnded) {
     <div>
         <p>Game ended. Thank you for playing!</p>

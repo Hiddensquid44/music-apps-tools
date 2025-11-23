@@ -18,6 +18,7 @@ export class BlindtestGameQuizz implements OnInit {
   @Input() goodTrack: Track = new Track();
   @Input() wrongTracksName: string[] = [];
 
+  @Output() selectNextTrack: EventEmitter<void> = new EventEmitter<void>();
   @Output() trackScore: EventEmitter<number> = new EventEmitter<number>();
 
   proposals: string[] = [];
@@ -43,6 +44,7 @@ export class BlindtestGameQuizz implements OnInit {
   async countScoreDown() {
     this.intervalId ??= setInterval(() => {
       this.score--;
+      this.cdr.detectChanges();
       if (this.score === 0) {
         clearInterval(this.intervalId);
         return;
@@ -57,6 +59,7 @@ export class BlindtestGameQuizz implements OnInit {
       console.log('Correct answer!');
       console.log(this.score);
       clearInterval(this.intervalId);
+      this.trackScore.emit(this.score);
       this.answered = true;
       this.cdr.detectChanges();
       if (this.goodTrack.album && this.goodTrack.album.images.length > 0) {
@@ -65,7 +68,7 @@ export class BlindtestGameQuizz implements OnInit {
         this.cdr.detectChanges();
       }
       setTimeout(() => {
-        this.trackScore.emit(this.score);
+        this.selectNextTrack.emit();
       }, 5000);
     } else {
       console.log('Wrong answer.');

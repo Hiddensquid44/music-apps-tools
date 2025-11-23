@@ -25,7 +25,8 @@
         <app-blindtest-game-quizz
             [goodTrack]="gameState.playlistTracks[gameState.currentTrackIndex]"
             [wrongTracksName]="gameState.wrongTracksNames"
-            (trackScore)="roundFinished($event)"
+            (trackScore)="updatePlayerScore($event)"
+            (selectNextTrack)="nextQuizz()"
         ></app-blindtest-game-quizz>
     }
 </div>

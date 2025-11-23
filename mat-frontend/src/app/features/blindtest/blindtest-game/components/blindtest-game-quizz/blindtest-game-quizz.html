@@ -1,3 +1,19 @@
+@if (!answered) {
+    <p-card>
+        <h2>Choose the correct track</h2>
+        <h2>Score for this track: {{ score }}</h2>
+        <div class="card">
+            @for (proposal of proposals; track $index) {
+                <p-button
+                    class="proposals"
+                    fluid="true"
+                    [label]="proposal"
+                    (click)="selectProposal($index)"
+                />
+            }
+        </div>
+    </p-card>
+}
 @if (answered) {
     <p-card>
         <div class="card">
@@ -8,20 +24,6 @@
                     alt="Good Track Image"
                     width="300"
                     height="300"
-                />
-            }
-        </div>
-    </p-card>
-}
-@if (!answered) {
-    <p-card>
-        <div class="card">
-            @for (proposal of proposals; track $index) {
-                <p-button
-                    class="proposals"
-                    fluid="true"
-                    [label]="proposal"
-                    (click)="selectProposal($index)"
                 />
             }
         </div>

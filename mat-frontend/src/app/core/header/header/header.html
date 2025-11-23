@@ -1,3 +1,8 @@
-<button (click)="logout()">Logout</button>
-<button (click)="goToPage('dashboard')">Dashboard</button>
-<button (click)="goToPage('blindtest-menu')">Blindtest menu</button>
+<p-menubar [model]="items">
+    <ng-template #item let-item let-root="root">
+        <p-button [label]=item.label [icon]=item.icon></p-button>
+    </ng-template>
+    <ng-template #end>
+        <p-button label="Log out" (onClick)="logout()"></p-button>
+    </ng-template>
+</p-menubar>

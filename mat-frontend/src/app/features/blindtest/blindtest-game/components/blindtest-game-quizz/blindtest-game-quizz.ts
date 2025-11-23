@@ -16,7 +16,6 @@ export class BlindtestGameQuizz implements OnInit {
   @Input() goodTrack: Track = new Track();
   @Input() wrongTracksName: string[] = [];
 
-  @Output() goodAnswerSelected: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() trackScore: EventEmitter<number> = new EventEmitter<number>();
 
   proposals: string[] = [];
@@ -54,7 +53,6 @@ export class BlindtestGameQuizz implements OnInit {
       console.log('Correct answer!');
       console.log(this.score);
       clearInterval(this.intervalId);
-      this.goodAnswerSelected.emit(true);
       this.trackScore.emit(this.score);
     } else {
       console.log('Wrong answer.');

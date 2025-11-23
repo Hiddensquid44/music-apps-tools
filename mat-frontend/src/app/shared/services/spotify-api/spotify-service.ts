@@ -66,7 +66,7 @@ export class SpotifyService {
       return;
     }
     await lastValueFrom(
-      this.http.post(url, null, fixedOptions as { observe: 'body' }).pipe(
+      this.http.put(url, null, fixedOptions as { observe: 'body' }).pipe(
        catchError((error) => {
          if (error?.error?.error?.message === 'The access token expired') {
           return from(this.loginService.refreshToken()).pipe(

@@ -24,7 +24,6 @@ export class BlindtestGame {
   public readonly BLINDTEST_SIZE = BlindtestData.BLINDTEST_SIZE;
   public gameState = BlindtestData.gameState ?? new GameState();
   public notPlayedTracks: Track[] = [];
-  public gameEnded: boolean = false;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -47,7 +46,7 @@ export class BlindtestGame {
         await this.blindtestService.skipToTrack(this.gameState.playlistTracks[0].href);
         this.gameState.gameStarted = true;
         this.gameState.gameOnGoing = true;
-        this.gameEnded = false;
+        this.gameState.gameEnded = false;
         this.saveGameState();
         this.nextQuizz();
       } catch (error) {
@@ -67,13 +66,9 @@ export class BlindtestGame {
     if (this.gameState.currentTrackIndex >= BlindtestData.BLINDTEST_SIZE) {
       // Implement end of game logic here
       console.log('Blindtest game ended.');
-      this.gameEnded = true;
+      this.gameState.gameEnded = true;
       this.saveGameState();
       await this.playbackStateService.setRepeatMode('context');
-      setTimeout(() => {
-        this.gameEnded = false;
-        this.cdr.detectChanges();
-      }, 2000);
     } else {
       console.log('Current track index:', this.gameState.currentTrackIndex);
       console.log('gameOnGoing set to:', this.gameState.gameOnGoing);
@@ -87,13 +82,14 @@ export class BlindtestGame {
       await this.playbackStateService.setRepeatMode('track');
       this.gameState.gameOnGoing = true;
       this.saveGameState();
-      this.cdr.detectChanges();
     }
+    this.cdr.detectChanges();
   }
 
-  public updatePlayerScore(trackScore: number) {
+  public roundFinished(trackScore: number) {
     BlindtestData.gameState.score += trackScore;
     console.log("Player score: " + BlindtestData.gameState.score);
+    this.nextQuizz();
   }
 
   private saveGameState(): void {

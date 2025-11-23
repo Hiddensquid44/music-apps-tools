@@ -1,15 +1,11 @@
-<div>
-    <h2>Welcome, {{ user.display_name }}</h2>
-</div>
-<div>
-    <p>Your Spotify ID: {{ user.id }}</p>
-    <p>Your Email: {{ user.email }}</p>
-    <p>Your Country: {{ user.country }}</p>
-    <p>Your Product: {{ user.product }}</p>
-</div>
-<div>
-    <button (click)="goToBlindtestMenu()">Go to Blindtest Menu</button>
-</div>
-@if (!user) {
-    <p>Loading user data...</p>
-}
+<p-card>
+    <div>
+        <h2>Hi, {{ user.display_name }}</h2>
+        <h2>Welcome to Utlimate Blindtest!</h2>
+        <h2>Select an activity:</h2>
+        <p-button label="Blindtest" (onClick)="goToBlindtestMenu()"/>
+    </div>
+    @if (!user) {
+        <p>Loading user data...</p>
+    }
+</p-card>

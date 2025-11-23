@@ -1,18 +1,17 @@
-<div>
-    <h2>Welcome, {{ user.display_name }}</h2>
-</div>
-<div>
-    <h3>Your Playlists:</h3>
-    <ul>
-        @for (playlist of blindtestPlaylists; track $index) {
-            <li>
-                <button (click)="startBlindtest($index)">
-                    {{ playlist.name }} ({{ playlist.tracks.total }} tracks)
-                </button>
-            </li>
-        }
-    </ul>
-</div>
-@if (!user) {
-    <p>Loading user data...</p>
-}
+<p-card>
+    <div>
+        <h3>Your Playlists:</h3>
+        <ul>
+            @for (playlist of blindtestPlaylists; track $index) {
+                <li>
+                    <button (click)="startBlindtest($index)">
+                        {{ playlist.name }} ({{ playlist.tracks.total }} tracks)
+                    </button>
+                </li>
+            }
+        </ul>
+    </div>
+    @if (!user) {
+        <p>Loading user data...</p>
+    }
+</p-card>

@@ -1,12 +1,29 @@
-<p-card>
-    <div class="buttons-container">
-        @for (proposal of proposals; track $index) {
-            <p-button
-                class="proposals"
-                fluid="true"
-                [label]="proposal"
-                (click)="selectProposal($index)"
-            />
-        }
-    </div>
-</p-card>
+@if (answered) {
+    <p-card>
+        <div class="card">
+            <h2>The good answer is {{ goodTrack.name }}!</h2>
+            @if (coverUrl) {
+                <p-image
+                    [src]="coverUrl"
+                    alt="Good Track Image"
+                    width="300"
+                    height="300"
+                />
+            }
+        </div>
+    </p-card>
+}
+@if (!answered) {
+    <p-card>
+        <div class="card">
+            @for (proposal of proposals; track $index) {
+                <p-button
+                    class="proposals"
+                    fluid="true"
+                    [label]="proposal"
+                    (click)="selectProposal($index)"
+                />
+            }
+        </div>
+    </p-card>
+}

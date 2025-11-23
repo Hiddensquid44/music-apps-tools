@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Playlist } from '../../models/playlist';
 import { LoginData } from '../../../core/login/login-data';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { SpotifyService } from './spotify-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private spotifyService: SpotifyService) {}
 
   private getOptions(responseType: 'json' | 'text' = 'json') {
     return {
@@ -19,22 +20,13 @@ export class SearchService {
     };
   }
 
-  public async searchPlaylists(query: string): Promise<Playlist[] | null> {
+  public async searchPlaylists(query: string): Promise<Playlist[]> {
     const limit = 5;
-    return new Promise<Playlist[] | null>((resolve) => {
-       this.http.get<any>(
+    const response = await this.spotifyService.getRequest<any>(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=playlist&limit=${limit}`,
-      this.getOptions()
-    ).subscribe({
-          next: (response) => {
-            resolve(response?.items);
-          },
-          error: (error) => {
-            console.error('Error retrieving current playing track:', error);
-            resolve(null);
-          }
-        });
-    });
+       this.getOptions()
+      );
+    return response?.items;
   }
   
 }

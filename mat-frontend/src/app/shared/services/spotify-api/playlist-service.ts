@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { LoginData } from '../../../core/login/login-data';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Track } from '../../models/track';
-import { PlaybackStateService } from './playback-state-service';
+import { SpotifyService } from './spotify-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaylistService {
 
-  constructor(private http: HttpClient, private playbackStateService: PlaybackStateService) {}
+  constructor(private spotifyService: SpotifyService) {}
 
   private getOptions(responseType: 'json' | 'text' = 'json') {
     return {
@@ -21,7 +21,7 @@ export class PlaylistService {
   }
 
   public async getPlaylistDetails(href: string): Promise<Track[]> {
-    const response = await this.http.get<any>(href, this.getOptions()).toPromise();
+    const response = await this.spotifyService.getRequest<any>(href, this.getOptions());
     return response!.tracks.items.map((item: any) => item.track as Track);
   }
   

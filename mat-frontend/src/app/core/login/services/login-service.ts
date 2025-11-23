@@ -3,6 +3,7 @@ import { LoginData } from '../login-data';
 import { isPlatformBrowser } from '@angular/common';
 import { Utils } from '../../../shared/utils';
 import { environment } from '../../../../environments/environment';
+import { GlobalData } from '../../../shared/global-data';
 
 @Injectable({
   providedIn: 'root'
@@ -85,6 +86,12 @@ export class LoginService {
 
     public isBrowser(): boolean {
         return isPlatformBrowser(this.platformId);
+    }
+
+    public logout() {
+        LoginData.clearLoginData();
+        GlobalData.clearGlobalData();
+        window.open('https://accounts.spotify.com/en/logout', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
     }
   
 }

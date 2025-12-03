@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './core/header/header/header';
 import { PrimeNG } from 'primeng/config';
@@ -11,11 +11,9 @@ import { PrimeNG } from 'primeng/config';
   styleUrl: './app.css'
 })
 export class App implements OnInit {
-  protected readonly title = signal('mat-frontend');
-  
-  constructor (private primng: PrimeNG) {}
+  constructor (private primeng: PrimeNG) {}
 
   ngOnInit(): void {
-    this.primng.ripple.set(true);
+    this.primeng.ripple.set(true);
   }
 }

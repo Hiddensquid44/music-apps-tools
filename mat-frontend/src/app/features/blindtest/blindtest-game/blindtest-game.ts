@@ -50,7 +50,7 @@ export class BlindtestGame {
         this.gameState.gameOnGoing = true;
         this.gameState.gameEnded = false;
         this.saveGameState();
-        this.nextQuizz();
+        await this.nextQuizz();
       } catch (error) {
         console.error('Error adding tracks to queue:', error);
       }
@@ -66,7 +66,7 @@ export class BlindtestGame {
     this.notPlayedTracks = this.gameState.playlistTracks.slice(this.gameState.currentTrackIndex + 1, this.gameState.playlistTracks.length);
     console.log('Not played tracks:', this.notPlayedTracks.map(track => track.name));
     if (this.gameState.currentTrackIndex >= BlindtestData.BLINDTEST_SIZE) {
-      // Implement end of game logic here
+      // Implement end-of game logic here
       console.log('Blindtest game ended.');
       this.gameState.gameEnded = true;
       this.saveGameState();
@@ -74,7 +74,7 @@ export class BlindtestGame {
     } else {
       console.log('Current track index:', this.gameState.currentTrackIndex);
       console.log('gameOnGoing set to:', this.gameState.gameOnGoing);
-      
+
       // Shuffle the track names and take the first 3 as wrong proposals
       const shuffledNotPlayedNames = Utils.shuffleArray(this.notPlayedTracks.map(track => track.name));
       this.gameState.wrongTracksNames = shuffledNotPlayedNames.slice(0, Math.min(3, shuffledNotPlayedNames.length));

@@ -9,7 +9,7 @@ export class PlaybackState {
         name: string;
         type: string;
         volume_percent: number;
-        suppports_volume: boolean;
+        supports_volume: boolean;
     } | null = null;
     repeat_state: 'off' | 'context' | 'track' = 'off';
     shuffle_state: boolean = false;
@@ -41,7 +41,7 @@ export class PlaybackState {
             name: string;
             type: string;
             volume_percent: number;
-            suppports_volume: boolean;
+            supports_volume: boolean;
         },
         repeat_state?: 'off' | 'context' | 'track',
         shuffle_state?: boolean,

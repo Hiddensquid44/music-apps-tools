@@ -45,7 +45,7 @@ export class LoginService {
         const response = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
             headers: {
-                // Use a helper that works both in browser and (if needed) server-side environments.
+                // Use a helper that works both in browser and (if necessary) server-side environments.
                 'Authorization': 'Basic ' + Utils.encodeBase64(LoginData.clientId + ':' + LoginData.clientSecret),
                 'content-type': 'application/x-www-form-urlencoded'
             },
@@ -93,5 +93,5 @@ export class LoginService {
         GlobalData.clearGlobalData();
         window.open('https://accounts.spotify.com/en/logout', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
     }
-  
+
 }

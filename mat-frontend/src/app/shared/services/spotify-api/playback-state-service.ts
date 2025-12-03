@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LoginData } from '../../../core/login/login-data';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { PlaybackState } from '../../models/playback-state';
 import { Track } from '../../models/track';
 import { SpotifyService } from './spotify-service';
@@ -10,7 +10,7 @@ import { SpotifyService } from './spotify-service';
 })
 export class PlaybackStateService {
 
-  constructor(private http: HttpClient, private spotifyService: SpotifyService) {}
+  constructor(private spotifyService: SpotifyService) {}
 
   private getOptions(responseType: 'json' | 'text' = 'json') {
     return {
@@ -45,5 +45,5 @@ export class PlaybackStateService {
   public async setRepeatMode(mode: 'track' | 'context' | 'off'): Promise<void> {
     return await this.spotifyService.putRequest(`https://api.spotify.com/v1/me/player/repeat?state=${mode}`, this.getOptions('text'));
   }
-  
+
 }

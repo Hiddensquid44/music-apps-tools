@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { LoginService } from '../../../core/login/services/login-service';
-import { catchError, from, lastValueFrom, switchMap } from 'rxjs';
-import { LoginData } from '../../../core/login/login-data';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {LoginService} from '../../../core/login/services/login-service';
+import {catchError, from, lastValueFrom, switchMap} from 'rxjs';
+import {LoginData} from '../../../core/login/login-data';
 
 @Injectable({
   providedIn: 'root'
@@ -13,30 +13,28 @@ export class SpotifyService {
 
   public async getRequest<T>(url: string, options: any = {}): Promise<T> {
     const fixedOptions = this.fixOptions(options);
-    if (!this.isTokenValid()) {
-      const requestAfterRefreshToken = await lastValueFrom(from(this.loginService.refreshToken()).pipe(
-        switchMap(()=> from(this.getRequest<T>(url, options)))
+    if (!await this.isTokenValid()) {
+      return await lastValueFrom(from(this.loginService.refreshToken()).pipe(
+        switchMap(() => from(this.getRequest<T>(url, options)))
       ));
-      return requestAfterRefreshToken;
     }
-    const response = await lastValueFrom(
+    return await lastValueFrom(
       this.http.get<T>(url, fixedOptions as { observe: 'body' }).pipe(
-       catchError((error) => {
-         if (error?.error?.error?.message === 'The access token expired') {
-          return from(this.loginService.refreshToken()).pipe(
-            switchMap(()=> from(this.getRequest<T>(url, options)))
-          );
-         }
-         throw error;
-       })
+        catchError((error) => {
+          if (error?.error?.error?.message === 'The access token expired') {
+            return from(this.loginService.refreshToken()).pipe(
+              switchMap(() => from(this.getRequest<T>(url, options)))
+            );
+          }
+          throw error;
+        })
       )
     );
-    return response;
   }
 
   public async postRequest(url: string, options: any = {}): Promise<void> {
     const fixedOptions = this.fixOptions(options);
-    if (!this.isTokenValid()) {
+    if (!await this.isTokenValid()) {
       await lastValueFrom(from(this.loginService.refreshToken()).pipe(
         switchMap(()=> from(this.postRequest(url, options)))
       ));
@@ -59,7 +57,7 @@ export class SpotifyService {
 
   public async putRequest(url: string, options: any = {}): Promise<void> {
     const fixedOptions = this.fixOptions(options);
-    if (!this.isTokenValid()) {
+    if (!await this.isTokenValid()) {
       await lastValueFrom(from(this.loginService.refreshToken()).pipe(
         switchMap(()=> from(this.putRequest(url, options)))
       ));
@@ -85,10 +83,8 @@ export class SpotifyService {
       this.loginService.logout();
       throw new Error("User disconnected, need to log again");
     }
-    if (!LoginData.accessToken) {
-      return false;
-    }
-    return true;
+    return LoginData.accessToken;
+
   }
 
   private fixOptions(options: any = {}) {
@@ -97,5 +93,5 @@ export class SpotifyService {
       observe: 'body' as const
     };
   }
-  
+
 }

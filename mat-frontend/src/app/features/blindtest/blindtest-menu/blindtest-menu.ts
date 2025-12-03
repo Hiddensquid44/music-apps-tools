@@ -13,14 +13,12 @@ import { Card } from "primeng/card";
   styleUrl: './blindtest-menu.css'
 })
 export class BlindtestMenu {
-  
+
   public user = GlobalData.currentUser ?? new User();
   public blindtestPlaylists = this.user.playlists
     .filter(playlist => playlist.tracks.total > BlindtestData.BLINDTEST_SIZE + 3);
 
   constructor(private router: Router) {}
-
-  ngOnInit() {}
 
   startBlindtest(id: number) {
     const gameState = new GameState();

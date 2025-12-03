@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { GlobalData } from '../../../shared/global-data';
-import { User } from '../../../shared/models/user';
-import { LoginService } from '../services/login-service';
-import { UserService } from '../../../shared/services/spotify-api/user-service';
-import { LoginData } from '../login-data';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {GlobalData} from '../../../shared/global-data';
+import {User} from '../../../shared/models/user';
+import {LoginService} from '../services/login-service';
+import {UserService} from '../../../shared/services/spotify-api/user-service';
+import {LoginData} from '../login-data';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,8 @@ import { LoginData } from '../login-data';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+
+export class Login implements OnInit {
   constructor(
     private router: Router,
     private loginService: LoginService,
@@ -33,10 +34,10 @@ export class Login {
         GlobalData.currentUser = new User();
         await this.getCurrentUserInfos();
         await this.userService.saveAllCurrentUserPlaylists();
-        this.router.navigate(['/dashboard']);
+        await this.router.navigate(['/dashboard']);
       }
     } else {
-      this.router.navigate(['/dashboard']);
+      await this.router.navigate(['/dashboard']);
     }
   }
 
@@ -45,8 +46,7 @@ export class Login {
   }
 
   private async getCurrentUserInfos() {
-    const user = await this.userService.getCurrentUserInfos();
-    GlobalData.currentUser = user;
+    GlobalData.currentUser = await this.userService.getCurrentUserInfos();
   }
 
 }

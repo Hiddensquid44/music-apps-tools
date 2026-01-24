@@ -37,7 +37,6 @@ export class BlindtestGame {
 
   async setupBlindtest(): Promise<void> {
     try {
-      // Fetch and shuffle playlist tracks
       const tracks = await this.playlistService.getPlaylistDetails(this.gameState.playlist.href);
       this.gameState.playlistTracks = Utils.shuffleArray(tracks)
         .filter((track) => track.available_markets.includes(GlobalData?.currentUser?.country));

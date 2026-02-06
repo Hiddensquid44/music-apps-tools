@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { BlindtestData } from '../blindtest-data';
 import { GameState } from '../models/game-state';
 import { Card } from "primeng/card";
+import { Playlist } from '../../../shared/models/playlist';
 
 @Component({
   selector: 'app-blindtest-menu',
@@ -15,10 +16,12 @@ import { Card } from "primeng/card";
 export class BlindtestMenu {
 
   public user = GlobalData.currentUser ?? new User();
-  public blindtestPlaylists = this.user.playlists
-    .filter(playlist => playlist.tracks.total > BlindtestData.BLINDTEST_SIZE + 3);
+  public blindtestPlaylists: Playlist[];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.blindtestPlaylists = this.user.playlists
+      .filter(playlist => playlist.tracks.total > BlindtestData.BLINDTEST_SIZE + 3);
+  }
 
   startBlindtest(id: number) {
     const gameState = new GameState();

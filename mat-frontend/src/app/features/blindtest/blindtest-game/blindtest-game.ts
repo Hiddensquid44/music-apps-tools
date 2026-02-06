@@ -68,8 +68,7 @@ export class BlindtestGame {
     if (this.gameState.currentTrackIndex >= BlindtestData.BLINDTEST_SIZE) {
       // Implement end-of game logic here
       console.log('Blindtest game ended.');
-      this.gameState.gameEnded = true;
-      this.saveGameState();
+      this.clearBlindtestState();
       await this.playbackStateService.setRepeatMode('context');
     } else {
       console.log('Current track index:', this.gameState.currentTrackIndex);
@@ -99,5 +98,9 @@ export class BlindtestGame {
     } catch (error) {
       console.error('Error saving game state:', error);
     }
+  }
+
+  private clearBlindtestState(): void {
+    BlindtestData.clearBlindtestData();
   }
 }

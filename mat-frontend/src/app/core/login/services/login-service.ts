@@ -1,5 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { LoginData } from '../login-data';
+import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { Utils } from '../../../shared/utils';
 import { environment } from '../../../../environments/environment';
@@ -12,6 +13,7 @@ export class LoginService {
 
     constructor(@Inject(PLATFORM_ID)
         private platformId: Object,
+        private router: Router
     ) { }
 
     public async retrieveCode() {
@@ -59,29 +61,46 @@ export class LoginService {
         LoginData.refreshToken = data.refresh_token;
     }
 
-    public async refreshToken() {
-        if (LoginData.accessToken === '') {
-            console.error('No access token available for refresh.');
-            return;
+    public async refreshToken(): Promise<boolean> {
+        // Use the refresh token to obtain a new access token
+        if (!LoginData.refreshToken) {
+            console.error('No refresh token available for refresh.');
+            return false;
         }
 
-        // Implement token refresh logic if needed
-        const params = new URLSearchParams({
-            grant_type: 'refresh_token',
-            refresh_token: LoginData.refreshToken
-        });
+        try {
+            const params = new URLSearchParams({
+                grant_type: 'refresh_token',
+                refresh_token: LoginData.refreshToken
+            });
 
-        const response = await fetch('https://accounts.spotify.com/api/token', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Basic ' + Utils.encodeBase64(LoginData.clientId + ':' + LoginData.clientSecret),
-                'content-type': 'application/x-www-form-urlencoded'
-            },
-            body: params.toString()
-        });
-        const data = await response.json();
-        LoginData.accessToken = data.access_token;
-        LoginData.refreshToken = data.refresh_token;
+            const response = await fetch('https://accounts.spotify.com/api/token', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + Utils.encodeBase64(LoginData.clientId + ':' + LoginData.clientSecret),
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                body: params.toString()
+            });
+
+            const data = await response.json();
+
+            if (!data.access_token) {
+                console.error('Refresh response did not include access_token', data);
+                return false;
+            }
+
+            LoginData.accessToken = data.access_token;
+            // Spotify may or may not return a new refresh_token; update if present
+            if (data.refresh_token) {
+                LoginData.refreshToken = data.refresh_token;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            return false;
+        }
     }
 
     public isBrowser(): boolean {
@@ -91,7 +110,14 @@ export class LoginService {
     public logout() {
         LoginData.clearLoginData();
         GlobalData.clearGlobalData();
-        window.open('https://accounts.spotify.com/en/logout', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
+        const spotifyLogoutWindow = window.open('https://accounts.spotify.com/en/logout', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
+        if (!spotifyLogoutWindow) throw new Error(
+            'Spotify logout window could not be opened. Please make sure that the Spotify app is installed and that you are logged in to Spotify.'
+        )
+        setTimeout(async () => {
+          spotifyLogoutWindow.close();
+          await this.router.navigate(['/login']);
+        }, 200)
     }
 
 }

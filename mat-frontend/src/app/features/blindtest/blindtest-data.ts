@@ -8,7 +8,7 @@ export class BlindtestData implements OnInit {
   public static readonly BLINDTEST_SIZE = 10;
 
   private static readonly STORAGE_KEY = 'blindtest_gameState';
-  
+
   private static _gameState: GameState;
 
   public static get gameState(): GameState {
@@ -39,6 +39,12 @@ export class BlindtestData implements OnInit {
       } else {
         this._gameState = new GameState();
       }
+    }
+  }
+
+  public static clearBlindtestData() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(this.STORAGE_KEY);
     }
   }
 }

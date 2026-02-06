@@ -1,0 +1,17 @@
+/* Minimal layout styles: header fixed at top, content below */
+:host {
+  display: block;
+  height: 100vh;
+}
+app-header {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+router-outlet {
+  display: block;
+  padding-top: 0.5rem;
+}
+/* If needed, pages can style their own containers to have scrolling content */
+

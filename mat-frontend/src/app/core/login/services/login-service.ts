@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Utils } from '../../../shared/utils';
 import { environment } from '../../../../environments/environment';
 import { GlobalData } from '../../../shared/global-data';
+import { BlindtestData } from '../../../features/blindtest/blindtest-data';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +66,7 @@ export class LoginService {
         // Use the refresh token to obtain a new access token
         if (!LoginData.refreshToken) {
             console.error('No refresh token available for refresh.');
+            this.logout(); // Clear any invalid state just in case
             return false;
         }
 
@@ -110,6 +112,7 @@ export class LoginService {
     public logout() {
         LoginData.clearLoginData();
         GlobalData.clearGlobalData();
+        BlindtestData.clearBlindtestData();
         const spotifyLogoutWindow = window.open('https://accounts.spotify.com/en/logout', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
         if (!spotifyLogoutWindow) throw new Error(
             'Spotify logout window could not be opened. Please make sure that the Spotify app is installed and that you are logged in to Spotify.'

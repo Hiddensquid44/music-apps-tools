@@ -61,8 +61,12 @@ export class Login implements OnInit {
         await this.userService.saveAllCurrentUserPlaylists();
         this.cdr.detectChanges();
         await this.router.navigate(['/dashboard']);
+        return;
       }
     }
+
+    this.loginService.logout(); // Clear any invalid tokens if we reach this point
+    return;
   }
 
   public async login() {

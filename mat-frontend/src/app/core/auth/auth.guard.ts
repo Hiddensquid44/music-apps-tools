@@ -21,6 +21,7 @@ export const authGuard: CanActivateFn = async (_route, _state) => {
     console.error('Error while attempting token refresh in guard:', err);
   }
 
-  // If we reach here, return a UrlTree redirecting to login (best practice)
-  return router.createUrlTree(['/login']);
+  // If we reach here, log the user out so he can log in again (best practice)
+  await loginService.logout();
+  return false;
 };

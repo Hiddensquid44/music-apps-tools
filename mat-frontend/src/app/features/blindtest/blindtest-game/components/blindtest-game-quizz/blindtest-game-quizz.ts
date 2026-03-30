@@ -53,25 +53,20 @@ export class BlindtestGameQuizz implements OnInit {
   }
   
   selectProposal(index: number): void {
+    clearInterval(this.intervalId);
     const selectedProposal = this.proposals[index];
-    console.log('Selected proposal:', selectedProposal);
     if (selectedProposal === this.goodTrack.name) {
-      console.log('Correct answer!');
-      console.log(this.score);
-      clearInterval(this.intervalId);
       this.trackScore.emit(this.score);
-      this.answered = true;
-      this.cdr.detectChanges();
-      if (this.goodTrack.album && this.goodTrack.album.images.length > 0) {
-        console.log('Album image URL:', this.goodTrack.album.images[0].url);
-        this.coverUrl = this.goodTrack.album.images[0].url;
-        this.cdr.detectChanges();
-      }
-      setTimeout(() => {
-        this.selectNextTrack.emit();
-      }, 5000);
     } else {
-      console.log('Wrong answer.');
+      this.trackScore.emit(0);
     }
+    this.answered = true;
+    if (this.goodTrack.album && this.goodTrack.album.images.length > 0) {
+      this.coverUrl = this.goodTrack.album.images[0].url;
+    }
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.selectNextTrack.emit();
+    }, 5000);
   }
 }

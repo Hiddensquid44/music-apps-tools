@@ -28,11 +28,9 @@ export class BlindtestGameQuizz implements OnInit {
   coverUrl: string = '';
 
   constructor(private cdr: ChangeDetectorRef) {
-    console.log('BlindtestGameQuizz constructor called');
   }
 
   ngOnInit() {
-    console.log('BlindtestGameQuizz ngOnInit called');
 
     // Add the wrong and good track names to proposals
     this.proposals.push(...this.wrongTracksName);

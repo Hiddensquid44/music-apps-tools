@@ -42,7 +42,6 @@ export class BlindtestGame {
         .filter((track) => track.available_markets.includes(GlobalData?.currentUser?.country));
       try {
         for (let i = 0; i < BlindtestData.BLINDTEST_SIZE; i++) {
-          console.log('Adding to queue track:', this.gameState.playlistTracks[i].name);
           await this.trackService.addTrackToQueue(this.gameState.playlistTracks[i].uri);
         }
         await this.blindtestService.skipToTrack(this.gameState.playlistTracks[0].href);
@@ -62,10 +61,8 @@ export class BlindtestGame {
 
   public async nextQuizz(): Promise<void> {
     this.gameState.gameOnGoing = false;
-    console.log('Not played tracks:', this.notPlayedTracks.map(track => track.name));
     if (this.gameState.currentTrackIndex + 1 >= BlindtestData.BLINDTEST_SIZE) {
       // Implement end-of game logic here
-      console.log('Blindtest game ended.');
       this.clearBlindtestState();
       await this.playbackStateService.setRepeatMode('context');
     } else {
@@ -86,7 +83,6 @@ export class BlindtestGame {
 
   public updatePlayerScore(trackScore: number) {
     BlindtestData.gameState.score += trackScore;
-    console.log("Player score: " + BlindtestData.gameState.score);
   }
 
   private saveGameState(): void {

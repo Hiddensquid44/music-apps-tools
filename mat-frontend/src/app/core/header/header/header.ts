@@ -25,7 +25,6 @@ export class Header implements OnInit {
   userName: string = GlobalData.currentUser?.display_name ?? '';
 
   ngOnInit(): void {
-    console.log('Logged in user:', this.userName);
     this.items = [
       {
         label: 'Dashboard',

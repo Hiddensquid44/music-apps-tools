@@ -62,18 +62,15 @@ export class BlindtestGame {
 
   public async nextQuizz(): Promise<void> {
     this.gameState.gameOnGoing = false;
-    this.gameState.currentTrackIndex++;
-    this.notPlayedTracks = this.gameState.playlistTracks.slice(this.gameState.currentTrackIndex + 1, this.gameState.playlistTracks.length);
     console.log('Not played tracks:', this.notPlayedTracks.map(track => track.name));
-    if (this.gameState.currentTrackIndex >= BlindtestData.BLINDTEST_SIZE) {
+    if (this.gameState.currentTrackIndex + 1 >= BlindtestData.BLINDTEST_SIZE) {
       // Implement end-of game logic here
       console.log('Blindtest game ended.');
       this.clearBlindtestState();
       await this.playbackStateService.setRepeatMode('context');
     } else {
-      console.log('Current track index:', this.gameState.currentTrackIndex);
-      console.log('gameOnGoing set to:', this.gameState.gameOnGoing);
-
+      this.gameState.currentTrackIndex++;
+      this.notPlayedTracks = this.gameState.playlistTracks.slice(this.gameState.currentTrackIndex + 1, this.gameState.playlistTracks.length);
       // Shuffle the track names and take the first 3 as wrong proposals
       const shuffledNotPlayedNames = Utils.shuffleArray(this.notPlayedTracks.map(track => track.name));
       this.gameState.wrongTracksNames = shuffledNotPlayedNames.slice(0, Math.min(3, shuffledNotPlayedNames.length));
